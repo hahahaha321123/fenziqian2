@@ -745,7 +745,14 @@ function openPersonPage(name) {
       <div class="person-ring-wrap">
         <svg width="104" height="104" viewBox="0 0 104 104">
           <circle cx="52" cy="52" r="43" fill="none" stroke="#F0DDD0" stroke-width="9"/>
-          <circle cx="52" cy="52" r="43" fill="none" stroke="${net>=0?'#2E9D5A':'#C4702A'}" stroke-width="9" stroke-linecap="round" stroke-dasharray="270.18" stroke-dashoffset="${270.18*(1-Math.min(Math.abs(net)/Math.max(Math.abs(sentTotal),Math.abs(recTotal),1),1))}" transform="rotate(-90 52 52)" style="transition:stroke-dashoffset .8s ease"/>
+          ${(function(){
+            const total = sentTotal + recTotal;
+            const c = 2*Math.PI*43; // 270.18
+            const expLen = total>0 ? sentTotal/total*c : 0;
+            const incLen = total>0 ? recTotal/total*c : 0;
+            const incRot = total>0 ? expLen/c*360 : 0;
+            return `<circle cx="52" cy="52" r="43" fill="none" stroke="#C4702A" stroke-width="9" stroke-dasharray="${expLen.toFixed(1)} ${(c-expLen).toFixed(1)}" transform="rotate(-90 52 52)" style="transition:stroke-dasharray .8s ease"/><circle cx="52" cy="52" r="43" fill="none" stroke="#2E9D5A" stroke-width="9" stroke-dasharray="${incLen.toFixed(1)} ${(c-incLen).toFixed(1)}" transform="rotate(${(-90+incRot).toFixed(1)} 52 52)" style="transition:all .8s ease"/>`;
+          })()}
         </svg>
         <div class="person-ring-text">
           <div class="person-ring-label">净盈亏</div>
@@ -774,7 +781,7 @@ function openPersonPage(name) {
   let tlHtml = '';
   Object.keys(months).forEach(mKey => {
     const mRecs = months[mKey];
-    tlHtml += `<div class="month-header">${mKey.replace(/年(\d+)月/,m=>m.match(/\d+/)[0]+'月')} ${new Date(mKey).getFullYear()}</div>`;
+    tlHtml += `<div class="month-header">${mKey}</div>`;
     mRecs.forEach(r => {
       const isNeg = r.type==='sent';
       tlHtml += `<div class="timeline-item" style="display:flex;align-items:flex-start">
