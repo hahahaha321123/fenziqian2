@@ -237,7 +237,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Hira
 .person-ring-wrap{flex-shrink:0;position:relative;width:104px;height:104px}
 .person-ring-text{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center}
 .person-ring-label{font-size:10px;color:var(--text-secondary)}
-.person-ring-val{font-size:19px;font-weight:800;color:var(--primary);line-height:1.2}
+.person-ring-val{font-size:19px;font-weight:800;color:var(--primary);line-height:1.2;white-space:nowrap}
 .person-stat-list{flex:1;display:flex;flex-direction:column;gap:6px}
 .person-stat-row{display:flex;align-items:center;justify-content:space-between;background:rgba(255,255,255,.65);padding:8px 13px;border-radius:10px}
 .person-stat-label{font-size:12px;color:var(--text-secondary)}
@@ -770,15 +770,8 @@ function openPersonPage(name) {
     months[key].push(r);
   });
 
-  // Balance section (inserted before timeline)
-  let tlHtml = `<div class="person-balance-section">
-    <div class="pbs-title">💰 人情收支</div>
-    <div class="pbs-grid">
-      <div class="pbs-item"><div class="pbs-item-label">人情收入</div><div class="pbs-item-val income">${formatCurrency(recTotal)}</div></div>
-      <div class="pbs-item"><div class="pbs-item-label">人情支出</div><div class="pbs-item-val expense">${formatCurrency(sentTotal)}</div></div>
-      <div class="pbs-item"><div class="pbs-item-label">人情结余</div><div class="pbs-item-val ${net>=0?'balance-pos':'balance-neg'}">${formatCurrency(net)}</div></div>
-    </div>
-  </div>`;
+  // Timeline - group by month
+  let tlHtml = '';
   Object.keys(months).forEach(mKey => {
     const mRecs = months[mKey];
     tlHtml += `<div class="month-header">${mKey.replace(/年(\d+)月/,m=>m.match(/\d+/)[0]+'月')} ${new Date(mKey).getFullYear()}</div>`;
