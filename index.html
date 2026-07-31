@@ -91,8 +91,9 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Hira
 .home-stat-val.balance-pos{color:var(--green)}
 .home-stat-val.balance-neg{color:var(--primary)}
 
-/* Home Stats Card - 顶部圆环+列表 */
-.home-stats-card{display:flex;align-items:center;gap:14px;background:linear-gradient(135deg,#FFF5E6,#FFE8CC);border-radius:16px;padding:18px 16px;margin-bottom:12px;box-shadow:var(--shadow)}
+/* Home Top Banner (sidebar上方全宽统计区) */
+#homeTopBanner{padding:12px 10px 0}
+.home-stats-card{display:flex;align-items:center;gap:14px;background:linear-gradient(135deg,#FFF5E6,#FFE8CC);border-radius:16px;padding:18px 16px;box-shadow:var(--shadow)}
 .home-ring-wrap{flex-shrink:0;position:relative;width:110px;height:110px}
 .home-ring-text{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center}
 .home-ring-label{font-size:10px;color:var(--text-secondary)}
@@ -360,6 +361,9 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Hira
   </div>
 </div>
 
+<!-- Home Top Banner (全宽统计卡片，在sidebar上方) -->
+<div id="homeTopBanner"></div>
+
 <!-- Main Layout -->
 <div class="main-layout">
   <div class="sidebar" id="sidebar"></div>
@@ -561,6 +565,8 @@ function renderMain() {
   const searchBar = document.querySelector('.search-bar');
   const showSearch = currentCategory !== 'home';
   if(searchBar) searchBar.style.display = showSearch ? '' : 'none';
+  const topBanner = document.getElementById('homeTopBanner');
+  if(topBanner) topBanner.innerHTML = '';
   if(currentCategory === 'home') { renderHomeDashboard(); }
   else { renderList(); }
 }
@@ -697,32 +703,32 @@ function renderHomeDashboard() {
   const incRot = totalIncome + totalExpense > 0 ? expLen / ringC * 360 : 0;
 
   let html = `<div class="home-dashboard">
-    <!-- 顶部统计区：圆环+4行列表 -->
-    <div class="home-stats-card">
-      <div class="home-ring-wrap">
-        <svg width="110" height="110" viewBox="0 0 110 110">
-          <circle cx="55" cy="55" r="${ringR}" fill="none" stroke="#F0DDD0" stroke-width="15"/>
-          <circle cx="55" cy="55" r="${ringR}" fill="none" stroke="#C4702A" stroke-width="15" stroke-dasharray="${expLen.toFixed(1)} ${(ringC-expLen).toFixed(1)}" transform="rotate(-90 55 55)" style="transition:stroke-dasharray .8s ease"/>
-          <circle cx="55" cy="55" r="${ringR}" fill="none" stroke="#2E9D5A" stroke-width="15" stroke-dasharray="${incLen.toFixed(1)} ${(ringC-incLen).toFixed(1)}" transform="rotate(${(-90+incRot).toFixed(1)} 55 55)" style="transition:all .8s ease"/>
-        </svg>
-        <div class="home-ring-text">
-          <div class="home-ring-label">净盈亏</div>
-          <div class="home-ring-val">${formatCurrency(net)}</div>
-        </div>
-      </div>
-      <div class="home-stat-list">
-        <div class="home-stat-row"><span class="home-stat-label">人情总支出</span><span class="home-stat-val">${formatCurrency(totalExpense)}</span></div>
-        <div class="home-stat-row"><span class="home-stat-label">人情总收入</span><span class="home-stat-val">${formatCurrency(totalIncome)}</span></div>
-        <div class="home-stat-row"><span class="home-stat-label">总待随礼</span><span class="home-stat-val" style="color:var(--primary)">${formatCurrency(totalDaiSui)}</span></div>
-        <div class="home-stat-row"><span class="home-stat-label">总待收礼</span><span class="home-stat-val" style="color:var(--green)">${formatCurrency(totalDaiShou)}</span></div>
-      </div>
-    </div>
-
     <!-- 底部：随机生活小妙招 -->
     <div class="home-tip-card">
       <div class="home-tip-title">💡 生活小妙招</div>
       <div class="home-tip-text">${tip}</div>
       <div class="home-tip-refresh" onclick="renderHomeDashboard()">换一条 ↻</div>
+    </div>
+  </div>`;
+
+  // 统计卡片放到顶部全宽横幅（sidebar上方）
+  document.getElementById('homeTopBanner').innerHTML = `<div class="home-stats-card">
+    <div class="home-ring-wrap">
+      <svg width="110" height="110" viewBox="0 0 110 110">
+        <circle cx="55" cy="55" r="${ringR}" fill="none" stroke="#F0DDD0" stroke-width="15"/>
+        <circle cx="55" cy="55" r="${ringR}" fill="none" stroke="#C4702A" stroke-width="15" stroke-dasharray="${expLen.toFixed(1)} ${(ringC-expLen).toFixed(1)}" transform="rotate(-90 55 55)" style="transition:stroke-dasharray .8s ease"/>
+        <circle cx="55" cy="55" r="${ringR}" fill="none" stroke="#2E9D5A" stroke-width="15" stroke-dasharray="${incLen.toFixed(1)} ${(ringC-incLen).toFixed(1)}" transform="rotate(${(-90+incRot).toFixed(1)} 55 55)" style="transition:all .8s ease"/>
+      </svg>
+      <div class="home-ring-text">
+        <div class="home-ring-label">净盈亏</div>
+        <div class="home-ring-val">${formatCurrency(net)}</div>
+      </div>
+    </div>
+    <div class="home-stat-list">
+      <div class="home-stat-row"><span class="home-stat-label">人情总支出</span><span class="home-stat-val">${formatCurrency(totalExpense)}</span></div>
+      <div class="home-stat-row"><span class="home-stat-label">人情总收入</span><span class="home-stat-val">${formatCurrency(totalIncome)}</span></div>
+      <div class="home-stat-row"><span class="home-stat-label">总待随礼</span><span class="home-stat-val" style="color:var(--primary)">${formatCurrency(totalDaiSui)}</span></div>
+      <div class="home-stat-row"><span class="home-stat-label">总待收礼</span><span class="home-stat-val" style="color:var(--green)">${formatCurrency(totalDaiShou)}</span></div>
     </div>
   </div>`;
 
