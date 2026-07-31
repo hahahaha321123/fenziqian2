@@ -145,35 +145,35 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Hira
 /* Modal Overlay */
 .modal-overlay{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.45);z-index:200;display:flex;align-items:flex-end;justify-content:center;opacity:0;pointer-events:none;transition:opacity .25s}
 .modal-overlay.show{opacity:1;pointer-events:auto}
-.modal{background:var(--card-bg);border-radius:22px 22px 0 0;width:100%;max-width:500px;max-height:92vh;overflow-y:auto;padding:24px 20px;transform:translateY(100%);transition:transform .35s cubic-bezier(.32,.72,0,1)}
+.modal{background:var(--card-bg);border-radius:22px 22px 0 0;width:100%;max-width:500px;max-height:92vh;overflow-y:auto;padding:18px 16px;transform:translateY(100%);transition:transform .35s cubic-bezier(.32,.72,0,1)}
 .modal-overlay.show .modal{transform:translateY(0)}
-.modal-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px}
-.modal-title{font-size:19px;font-weight:700}
-.modal-close{width:32px;height:32px;border-radius:50%;background:var(--bg);display:flex;align-items:center;justify-content:center;font-size:18px;cursor:pointer;border:none;color:var(--text-secondary)}
+.modal-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
+.modal-title{font-size:18px;font-weight:700}
+.modal-close{width:30px;height:30px;border-radius:50%;background:var(--bg);display:flex;align-items:center;justify-content:center;font-size:17px;cursor:pointer;border:none;color:var(--text-secondary)}
 
 /* Type Tabs */
-.type-tabs{display:flex;background:var(--primary-bg);border-radius:12px;padding:3px;margin-bottom:18px}
-.type-tab{flex:1;padding:11px;border:none;border-radius:10px;font-size:16px;font-weight:600;cursor:pointer;-webkit-tap-highlight-color:transparent;transition:all .15s;background:transparent;color:var(--text-secondary)}
+.type-tabs{display:flex;background:var(--primary-bg);border-radius:10px;padding:3px;margin-bottom:12px}
+.type-tab{flex:1;padding:8px 0;border:none;border-radius:8px;font-size:14px;font-weight:600;cursor:pointer;-webkit-tap-highlight-color:transparent;transition:all .15s;background:transparent;color:var(--text-secondary)}
 .type-tab.active{background:var(--card-bg);color:var(--primary);box-shadow:0 1px 4px rgba(0,0,0,.08)}
 
 /* Paste Button in Form */
-.paste-btn-inline{width:100%;padding:15px;border:2px dashed var(--primary);border-radius:14px;background:#FFF9F2;color:var(--primary);font-size:15px;font-weight:600;cursor:pointer;-webkit-tap-highlight-color:transparent;margin-bottom:20px;display:flex;align-items:center;justify-content:center;gap:8px;letter-spacing:.5px}
+.paste-btn-inline{width:100%;padding:9px;border:2px dashed var(--primary);border-radius:10px;background:#FFF9F2;color:var(--primary);font-size:13px;font-weight:600;cursor:pointer;-webkit-tap-highlight-color:transparent;margin-bottom:12px;display:flex;align-items:center;justify-content:center;gap:6px;letter-spacing:.5px}
 .paste-btn-inline:active{opacity:.75;transform:scale(.99);transition:transform .1s}
 
 /* Form */
-.form-group{margin-bottom:18px}
-.form-label{display:block;font-size:13px;font-weight:600;color:var(--text-secondary);margin-bottom:7px}
-.form-input,.form-textarea{width:100%;padding:14px 15px;border:1.5px solid var(--border);border-radius:12px;font-size:15px;color:var(--text-primary);outline:none;background:var(--bg);transition:border-color .2s;font-family:inherit}
+.form-row-2{display:flex;align-items:flex-end}
+.form-group{margin-bottom:13px}
+.form-label{display:block;font-size:12px;font-weight:600;color:var(--text-secondary);margin-bottom:5px}
+.form-input,.form-textarea{width:100%;padding:11px 12px;border:1.5px solid var(--border);border-radius:10px;font-size:14px;color:var(--text-primary);outline:none;background:var(--bg);transition:border-color .2s;font-family:inherit}
 .form-input:focus,.form-textarea:focus{border-color:var(--primary)}
-.form-textarea{resize:vertical;min-height:56px}
-.form-input-center{text-align:center;font-size:30px;font-weight:400;letter-spacing:3px;color:var(--primary);padding:16px 15px}
-.btn-save{width:100%;padding:16px;border-radius:14px;background:var(--primary);color:#fff;font-size:17px;font-weight:700;border:none;cursor:pointer;-webkit-tap-highlight-color:transparent;margin-top:10px;margin-bottom:calc(12px + var(--safe-bottom))}
+.form-textarea{resize:vertical;min-height:42px}
+.form-input-center{text-align:center;font-size:26px;font-weight:400;letter-spacing:2px;color:var(--primary);padding:12px}
+.btn-save{width:100%;padding:14px;border-radius:12px;background:var(--primary);color:#fff;font-size:16px;font-weight:700;border:none;cursor:pointer;-webkit-tap-highlight-color:transparent;margin-top:6px;margin-bottom:calc(8px + var(--safe-bottom))}
 .btn-save:active{opacity:.85}
 
 /* Category Grid */
-.cat-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.cat-btn{padding:13px;border:1.5px solid var(--border);border-radius:12px;font-size:15px;font-weight:600;color:var(--text-secondary);background:var(--card-bg);cursor:pointer;-webkit-tap-highlight-color:transparent;transition:all .15s;text-align:center}
-.cat-btn.full{grid-column:span 2}
+.cat-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px}
+.cat-btn{padding:9px 4px;border:1.5px solid var(--border);border-radius:10px;font-size:13px;font-weight:600;color:var(--text-secondary);background:var(--card-bg);cursor:pointer;-webkit-tap-highlight-color:transparent;transition:all .15s;text-align:center}
 .cat-btn.selected{border-color:var(--primary);color:var(--primary);background:var(--primary-bg)}
 
 /* Balance Overview Page */
@@ -390,13 +390,15 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Hira
     <!-- Form -->
     <form onsubmit="saveRecord(event)">
       <input type="hidden" id="editId">
-      <div class="form-group">
-        <label class="form-label">日期</label>
-        <input type="date" class="form-input" id="inputDate" required>
-      </div>
-      <div class="form-group">
-        <label class="form-label">姓名</label>
-        <input type="text" class="form-input" id="inputName" placeholder="对方姓名" required autocomplete="off">
+      <div class="form-row-2">
+        <div class="form-group" style="flex:1">
+          <label class="form-label">日期</label>
+          <input type="date" class="form-input" id="inputDate" required>
+        </div>
+        <div class="form-group" style="flex:1.4;margin-left:8px">
+          <label class="form-label">姓名</label>
+          <input type="text" class="form-input" id="inputName" placeholder="对方姓名" required autocomplete="off">
+        </div>
       </div>
       <div class="form-group">
         <label class="form-label">分类</label>
