@@ -540,7 +540,8 @@ function renderStats() {
 function renderSidebar() {
   let html = '';
   CATEGORIES.forEach(cat=>{
-    const count = cat.key==='home' ? records.length : (cat.key==='relatives' ? records.filter(r=>r.relation.startsWith('relatives')).length : records.filter(r=>r.relation===cat.key).length);
+    const base = cat.key==='home' ? records : (cat.key==='relatives' ? records.filter(r=>r.relation.startsWith('relatives')) : records.filter(r=>r.relation===cat.key));
+    const count = new Set(base.map(r=>r.name)).size;
     html += `<div class="sidebar-item ${currentCategory===cat.key?'active':''}" onclick="setCategory('${cat.key}')">
       <div class="sidebar-avatar" style="background:${cat.color}">${cat.icon}</div>
       <div class="sidebar-name">${cat.name}</div>
@@ -548,7 +549,7 @@ function renderSidebar() {
     </div>`;
     if(cat.sub && currentCategory===cat.key) {
       SUB_CATEGORIES.forEach(sub=>{
-        const sc = records.filter(r=>r.relation===cat.key && r.subRelation===sub.key).length;
+        const sc = new Set(records.filter(r=>r.relation===cat.key && r.subRelation===sub.key).map(r=>r.name)).size;
         html += `<div class="sidebar-sub-item ${currentSub===sub.key?'active':''}" onclick="setSub('${sub.key}')">
           <span class="sidebar-sub-dot" style="background:${sub.color}"></span>
           <span class="sidebar-sub-name">${sub.name}</span>
