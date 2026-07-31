@@ -664,16 +664,10 @@ function renderHomeDashboard() {
   const totalExpense = records.filter(r=>r.type==='sent').reduce((s,r)=>s+r.amount,0);
   const net = totalIncome - totalExpense;
 
-  // 计算全局总待随礼、总待收礼
-  let totalDaiSui = 0, totalDaiShou = 0;
-  const names = [...new Set(records.map(r=>r.name))];
-  names.forEach(name => {
-    const pr = records.filter(r=>r.name===name);
-    const s = pr.filter(r=>r.type==='sent').reduce((a,r)=>a+r.amount,0);
-    const r2 = pr.filter(r=>r.type==='received').reduce((a,r)=>a+r.amount,0);
-    totalDaiSui += Math.max(0, r2 - s);
-    totalDaiShou += Math.max(0, s - r2);
-  });
+  // 总待随礼 = 人情总收入 − 人情总支出（净盈余，非负）
+  // 总待收礼 = 人情总支出 − 人情总收入（净亏欠，非负）
+  const totalDaiSui = Math.max(0, totalIncome - totalExpense);
+  const totalDaiShou = Math.max(0, totalExpense - totalIncome);
 
   // 随机生活小妙招
   const tips = [
