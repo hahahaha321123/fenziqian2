@@ -145,7 +145,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Hira
 /* Modal Overlay */
 .modal-overlay{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.45);z-index:200;display:flex;align-items:flex-end;justify-content:center;opacity:0;pointer-events:none;transition:opacity .25s}
 .modal-overlay.show{opacity:1;pointer-events:auto}
-.modal{background:var(--card-bg);border-radius:22px 22px 0 0;width:100%;max-width:500px;max-height:92vh;overflow-y:auto;padding:20px 16px 16px;transform:translateY(100%);transition:transform .35s cubic-bezier(.32,.72,0,1)}
+.modal{background:var(--card-bg);border-radius:22px 22px 0 0;width:100%;max-width:500px;max-height:84vh;overflow-y:auto;padding:22px 16px 16px;transform:translateY(100%);transition:transform .35s cubic-bezier(.32,.72,0,1)}
 .modal-overlay.show .modal{transform:translateY(0)}
 .modal-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;padding-top:4px}
 .modal-title{font-size:18px;font-weight:700}
@@ -164,10 +164,10 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Hira
 .form-row-2{display:flex;align-items:flex-end}
 .form-group{margin-bottom:13px}
 .form-label{display:block;font-size:12px;font-weight:600;color:var(--text-secondary);margin-bottom:5px}
-.form-input,.form-textarea{width:100%;padding:11px 12px;border:1.5px solid var(--border);border-radius:10px;font-size:14px;color:var(--text-primary);outline:none;background:var(--bg);transition:border-color .2s;font-family:inherit}
+.form-input,.form-textarea{width:100%;height:40px;padding:0 12px;border:1.5px solid var(--border);border-radius:10px;font-size:14px;color:var(--text-primary);outline:none;background:var(--bg);transition:border-color .2s;font-family:inherit;box-sizing:border-box}
 .form-input:focus,.form-textarea:focus{border-color:var(--primary)}
 .form-textarea{resize:vertical;min-height:36px}
-.form-input-center{text-align:center;font-size:24px;font-weight:400;letter-spacing:2px;color:var(--primary);padding:10px}
+.form-input-center{text-align:center;font-size:24px;font-weight:400;letter-spacing:2px;color:var(--primary);height:40px;padding:0 12px}
 .btn-save{width:100%;padding:13px;border-radius:12px;background:var(--primary);color:#fff;font-size:16px;font-weight:700;border:none;cursor:pointer;-webkit-tap-highlight-color:transparent;margin-top:4px;margin-bottom:calc(6px + var(--safe-bottom))}
 .btn-save:active{opacity:.85}
 
