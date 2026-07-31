@@ -558,7 +558,7 @@ function renderSidebar() {
     if(SUB_CATEGORIES[cat.key] && currentCategory===cat.key) {
       SUB_CATEGORIES[cat.key].forEach(sub=>{
         const sc = new Set(records.filter(r=>r.relation===cat.key && r.subRelation===sub.key).map(r=>r.name)).size;
-        html += `<div class="sidebar-sub-item ${currentSub===sub.key?'active':''}" onclick="setSub('${sub.key}')">
+        html += `<div class="sidebar-sub-item ${currentSub===sub.key?'active':''}" onclick="setSub('${cat.key}','${sub.key}')">
           <span class="sidebar-sub-dot" style="background:${sub.color}"></span>
           <span class="sidebar-sub-name">${sub.name}</span>
           ${sc>0?`<span class="sidebar-sub-count">${sc}</span>`:''}
@@ -569,7 +569,7 @@ function renderSidebar() {
   document.getElementById('sidebar').innerHTML = html;
 }
 function setCategory(key) { currentCategory=key; currentSub=null; renderSidebar(); renderMain(); }
-function setSub(subKey) { currentCategory='relatives'; currentSub=subKey; renderSidebar(); renderMain(); }
+function setSub(catKey, subKey) { currentCategory=catKey; currentSub=subKey; renderSidebar(); renderMain(); }
 
 // ============ Main Router ============
 function renderMain() {
