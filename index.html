@@ -91,6 +91,23 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Hira
 .home-stat-val.balance-pos{color:var(--green)}
 .home-stat-val.balance-neg{color:var(--primary)}
 
+/* Home Stats Card - 顶部圆环+列表 */
+.home-stats-card{display:flex;align-items:center;gap:14px;background:linear-gradient(135deg,#FFF5E6,#FFE8CC);border-radius:16px;padding:18px 16px;margin-bottom:12px;box-shadow:var(--shadow)}
+.home-ring-wrap{flex-shrink:0;position:relative;width:110px;height:110px}
+.home-ring-text{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center}
+.home-ring-label{font-size:10px;color:var(--text-secondary)}
+.home-ring-val{font-size:17px;font-weight:800;color:var(--primary);white-space:nowrap;line-height:1.3}
+.home-stat-list{flex:1;min-width:0;display:flex;flex-direction:column;gap:7px}
+.home-stat-row{display:flex;align-items:center;justify-content:space-between;background:rgba(255,255,255,.65);border-radius:10px;padding:9px 12px;font-size:13px}
+.home-stat-row .home-stat-label{color:var(--text-secondary);font-size:12px}
+.home-stat-row .home-stat-val{font-weight:800;font-size:15px;color:var(--primary);white-space:nowrap}
+
+/* Home Tip Card - 生活小妙招 */
+.home-tip-card{background:var(--card-bg);border-radius:16px;padding:16px;box-shadow:var(--shadow);border-left:4px solid var(--primary)}
+.home-tip-title{font-size:14px;font-weight:700;color:var(--primary);margin-bottom:8px}
+.home-tip-text{font-size:13px;color:var(--text-primary);line-height:1.6}
+.home-tip-refresh{text-align:right;margin-top:8px;font-size:12px;color:var(--text-secondary);cursor:pointer}
+
 /* Content Area */
 .content-area{flex:1;padding:0 10px 12px 0;min-width:0}
 .section-header{display:flex;align-items:center;gap:8px;padding:13px 4px 7px}
@@ -674,11 +691,8 @@ function renderHomeDashboard() {
   const totalIncome = records.filter(r=>r.type==='received').reduce((s,r)=>s+r.amount,0);
   const totalExpense = records.filter(r=>r.type==='sent').reduce((s,r)=>s+r.amount,0);
   const net = totalIncome - totalExpense;
-  const C = 2 * Math.PI * 46; // circumference for r=46
-  const incomeLen = C * (totalIncome / Math.max(totalIncome+totalExpense,1));
-  const expenseLen = C * (totalExpense / Math.max(totalIncome+totalExpense,1));
 
-  // 计算全局总待随礼、总待收礼（按人汇总后累加）
+  // 计算全局总待随礼、总待收礼
   let totalDaiSui = 0, totalDaiShou = 0;
   const names = [...new Set(records.map(r=>r.name))];
   names.forEach(name => {
@@ -689,29 +703,60 @@ function renderHomeDashboard() {
     totalDaiShou += Math.max(0, s - r2);
   });
 
+  // 随机生活小妙招
+  const tips = [
+    "🍋 柠檬汁加盐可去除衣物上的汗渍，浸泡15分钟后搓洗即可。",
+    "🧊 冰箱除味：放一碗咖啡渣或橘子皮，24小时后异味全消。",
+    "🪥 牙刷用久了刷毛外翻？用热水泡5分钟可恢复原状。",
+    "🍚 剩饭变硬？蒸时加少许醋，米饭会松软如新。",
+    "🪟 玻璃有水渍？用报纸擦拭，比抹布干净还不留毛絮。",
+    "🧴 护手霜快用完了？加几滴橄榄油摇匀，又能用好几天。",
+    "🌿 绿萝叶子发黄？浇点啤酒稀释液，一周就返青。",
+    "🔑 钥匙孔生锈难转动？滴铅笔芯粉末进去，顺滑如初。",
+    "👟 白鞋边发黄？用牙膏+牙刷刷洗，晒干后洁白如新。",
+    "📱 手机发烫？调低屏幕亮度+关闭后台APP，降温最快。",
+    "🧹 地板有划痕？同色蜡笔涂满划痕处，吹风机加热后擦掉多余。",
+    "☕ 咖啡渍沾衣服？用苏打粉调成糊状敷上，静置后清洗。",
+    "🦟 被蚊子咬了？肥皂涂抹患处，止痒效果立竿见影。",
+    "🥑 牛油果催熟？和苹果一起装进纸袋，2-3天就能吃。",
+    "🧤 冬天手皲裂？睡前涂厚凡士林戴手套过夜，第二天嫩滑。"
+  ];
+  const tip = tips[Math.floor(Math.random() * tips.length)];
+
+  // 双色圆环参数
+  const ringR = 45;
+  const ringC = 2 * Math.PI * ringR; // 282.74
+  const incLen = totalIncome + totalExpense > 0 ? totalIncome / (totalIncome + totalExpense) * ringC : 0;
+  const expLen = totalIncome + totalExpense > 0 ? totalExpense / (totalIncome + totalExpense) * ringC : 0;
+  const incRot = totalIncome + totalExpense > 0 ? expLen / ringC * 360 : 0;
+
   let html = `<div class="home-dashboard">
-    <div class="home-hero">
-      <div class="home-pie-wrap">
+    <!-- 顶部统计区：圆环+4行列表 -->
+    <div class="home-stats-card">
+      <div class="home-ring-wrap">
         <svg width="110" height="110" viewBox="0 0 110 110">
-          <circle cx="55" cy="55" r="46" fill="none" stroke="#F0DDD0" stroke-width="16"/>
-          <circle cx="55" cy="55" r="46" fill="none" stroke="#2E9D5A" stroke-width="16" stroke-linecap="round" stroke-dasharray="${incomeLen.toFixed(2)} ${C.toFixed(2)}" transform="rotate(-90 55 55)"/>
-          <circle cx="55" cy="55" r="46" fill="none" stroke="#C4702A" stroke-width="16" stroke-linecap="round" stroke-dasharray="${expenseLen.toFixed(2)} ${C.toFixed(2)}" stroke-dashoffset="-${incomeLen.toFixed(2)}" transform="rotate(-90 55 55)"/>
+          <circle cx="55" cy="55" r="${ringR}" fill="none" stroke="#F0DDD0" stroke-width="15"/>
+          <circle cx="55" cy="55" r="${ringR}" fill="none" stroke="#C4702A" stroke-width="15" stroke-dasharray="${expLen.toFixed(1)} ${(ringC-expLen).toFixed(1)}" transform="rotate(-90 55 55)" style="transition:stroke-dasharray .8s ease"/>
+          <circle cx="55" cy="55" r="${ringR}" fill="none" stroke="#2E9D5A" stroke-width="15" stroke-dasharray="${incLen.toFixed(1)} ${(ringC-incLen).toFixed(1)}" transform="rotate(${(-90+incRot).toFixed(1)} 55 55)" style="transition:all .8s ease"/>
         </svg>
-        <div class="home-pie-text">
-          <div class="home-pie-label">净盈亏</div>
-          <div class="home-pie-val">${formatCurrency(net)}</div>
+        <div class="home-ring-text">
+          <div class="home-ring-label">净盈亏</div>
+          <div class="home-ring-val">${formatCurrency(net)}</div>
         </div>
       </div>
-      <div class="home-hero-legend">
-        <div class="home-leg-row"><span><span class="home-leg-dot" style="background:#2E9D5A"></span>人情收入</span><span style="color:var(--green)">${formatCurrency(totalIncome)}</span></div>
-        <div class="home-leg-row"><span><span class="home-leg-dot" style="background:#C4702A"></span>人情支出</span><span style="color:var(--primary)">${formatCurrency(totalExpense)}</span></div>
+      <div class="home-stat-list">
+        <div class="home-stat-row"><span class="home-stat-label">人情总支出</span><span class="home-stat-val">${formatCurrency(totalExpense)}</span></div>
+        <div class="home-stat-row"><span class="home-stat-label">人情总收入</span><span class="home-stat-val">${formatCurrency(totalIncome)}</span></div>
+        <div class="home-stat-row"><span class="home-stat-label">总待随礼</span><span class="home-stat-val" style="color:var(--primary)">${formatCurrency(totalDaiSui)}</span></div>
+        <div class="home-stat-row"><span class="home-stat-label">总待收礼</span><span class="home-stat-val" style="color:var(--green)">${formatCurrency(totalDaiShou)}</span></div>
       </div>
     </div>
-    <div class="home-stat-grid">
-      <div class="home-stat"><div class="home-stat-label">人情总支出</div><div class="home-stat-val expense">${formatCurrency(totalExpense)}</div></div>
-      <div class="home-stat"><div class="home-stat-label">人情总收入</div><div class="home-stat-val income">${formatCurrency(totalIncome)}</div></div>
-      <div class="home-stat"><div class="home-stat-label">总待随礼</div><div class="home-stat-val" style="color:var(--primary)">${formatCurrency(totalDaiSui)}</div></div>
-      <div class="home-stat"><div class="home-stat-label">总待收礼</div><div class="home-stat-val" style="color:var(--green)">${formatCurrency(totalDaiShou)}</div></div>
+
+    <!-- 底部：随机生活小妙招 -->
+    <div class="home-tip-card">
+      <div class="home-tip-title">💡 生活小妙招</div>
+      <div class="home-tip-text">${tip}</div>
+      <div class="home-tip-refresh" onclick="renderHomeDashboard()">换一条 ↻</div>
     </div>
   </div>`;
 
