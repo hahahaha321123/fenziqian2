@@ -486,21 +486,17 @@ const CATEGORIES = [
   {key:'home', name:'首页', icon:'首', color:'var(--primary)'},
   {key:'relatives', name:'亲戚', icon:'亲', color:'#E07850', sub:true},
   {key:'colleagues', name:'同事', icon:'同', color:'#4A90D9'},
-  {key:'classmates', name:'同学', icon:'同', color:'#7B68EE', sub:true},
+  {key:'classmates', name:'同学', icon:'同', color:'#7B68EE'},
   {key:'friends', name:'朋友', icon:'朋', color:'#43A06D'},
   {key:'others', name:'其他', icon:'其', color:'#888'}
 ];
 
-// 子分类按父分类各自定义
+// 子分类（仅亲戚）
 const SUB_CATEGORIES = {
   relatives: [
     {key:'mom', name:'妈妈亲戚', color:'#E07850'},
     {key:'dad', name:'爸爸亲戚', color:'#E07850'},
     {key:'inlaw', name:'婆家亲戚', color:'#E07850'}
-  ],
-  classmates: [
-    {key:'univ', name:'大学同学', color:'#7B68EE'},
-    {key:'high', name:'高中同学', color:'#7B68EE'}
   ]
 };
 
