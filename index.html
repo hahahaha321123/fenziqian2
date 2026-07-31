@@ -234,7 +234,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Hira
 .person-sum-tag{padding:6px 12px;border-radius:10px;font-size:13px;font-weight:600;background:rgba(255,255,255,.55)}
 .person-sum-tag.net{color:var(--primary)}
 .person-stats-body{display:flex;align-items:center;gap:14px}
-.person-ring-wrap{flex-shrink:0;position:relative;width:104px;height:104px}
+.person-ring-wrap{flex-shrink:0;position:relative;width:110px;height:110px}
 .person-ring-text{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center}
 .person-ring-label{font-size:10px;color:var(--text-secondary)}
 .person-ring-val{font-size:19px;font-weight:800;color:var(--primary);line-height:1.2;white-space:nowrap}
@@ -743,15 +743,15 @@ function openPersonPage(name) {
     </div>
     <div class="person-stats-body">
       <div class="person-ring-wrap">
-        <svg width="104" height="104" viewBox="0 0 104 104">
-          <circle cx="52" cy="52" r="43" fill="none" stroke="#F0DDD0" stroke-width="9"/>
+        <svg width="110" height="110" viewBox="0 0 110 110">
+          <circle cx="55" cy="55" r="45" fill="none" stroke="#F0DDD0" stroke-width="15"/>
           ${(function(){
             const total = sentTotal + recTotal;
-            const c = 2*Math.PI*43; // 270.18
+            const c = 2*Math.PI*45; // 282.74
             const expLen = total>0 ? sentTotal/total*c : 0;
             const incLen = total>0 ? recTotal/total*c : 0;
             const incRot = total>0 ? expLen/c*360 : 0;
-            return `<circle cx="52" cy="52" r="43" fill="none" stroke="#C4702A" stroke-width="9" stroke-dasharray="${expLen.toFixed(1)} ${(c-expLen).toFixed(1)}" transform="rotate(-90 52 52)" style="transition:stroke-dasharray .8s ease"/><circle cx="52" cy="52" r="43" fill="none" stroke="#2E9D5A" stroke-width="9" stroke-dasharray="${incLen.toFixed(1)} ${(c-incLen).toFixed(1)}" transform="rotate(${(-90+incRot).toFixed(1)} 52 52)" style="transition:all .8s ease"/>`;
+            return `<circle cx="55" cy="55" r="45" fill="none" stroke="#C4702A" stroke-width="15" stroke-dasharray="${expLen.toFixed(1)} ${(c-expLen).toFixed(1)}" transform="rotate(-90 55 55)" style="transition:stroke-dasharray .8s ease"/><circle cx="55" cy="55" r="45" fill="none" stroke="#2E9D5A" stroke-width="15" stroke-dasharray="${incLen.toFixed(1)} ${(c-incLen).toFixed(1)}" transform="rotate(${(-90+incRot).toFixed(1)} 55 55)" style="transition:all .8s ease"/>`;
           })()}
         </svg>
         <div class="person-ring-text">
