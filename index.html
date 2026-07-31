@@ -486,20 +486,28 @@ const CATEGORIES = [
   {key:'home', name:'首页', icon:'首', color:'var(--primary)'},
   {key:'relatives', name:'亲戚', icon:'亲', color:'#E07850', sub:true},
   {key:'colleagues', name:'同事', icon:'同', color:'#4A90D9'},
+  {key:'classmates', name:'同学', icon:'同', color:'#7B68EE', sub:true},
   {key:'friends', name:'朋友', icon:'朋', color:'#43A06D'},
-  {key:'classmates', name:'同学', icon:'同', color:'#7B68EE'},
   {key:'others', name:'其他', icon:'其', color:'#888'}
 ];
 
-const SUB_CATEGORIES = [
-  {key:'mom', name:'妈妈亲戚', color:'#E07850'},
-  {key:'dad', name:'爸爸亲戚', color:'#E07850'},
-  {key:'inlaw', name:'婆家亲戚', color:'#E07850'}
-];
+// 子分类按父分类各自定义
+const SUB_CATEGORIES = {
+  relatives: [
+    {key:'mom', name:'妈妈亲戚', color:'#E07850'},
+    {key:'dad', name:'爸爸亲戚', color:'#E07850'},
+    {key:'inlaw', name:'婆家亲戚', color:'#E07850'}
+  ],
+  classmates: [
+    {key:'univ', name:'大学同学', color:'#7B68EE'},
+    {key:'high', name:'高中同学', color:'#7B68EE'}
+  ]
+};
 
 let records = [];
 let currentCategory = 'home';
 let currentSub = null;
+let formCatKey = 'relatives';
 let editingId = null;
 let currentTypeTab = 'sent';
 
@@ -547,8 +555,8 @@ function renderSidebar() {
       <div class="sidebar-name">${cat.name}</div>
       ${count>0?`<div class="sidebar-count">${count}</div>`:''}
     </div>`;
-    if(cat.sub && currentCategory===cat.key) {
-      SUB_CATEGORIES.forEach(sub=>{
+    if(SUB_CATEGORIES[cat.key] && currentCategory===cat.key) {
+      SUB_CATEGORIES[cat.key].forEach(sub=>{
         const sc = new Set(records.filter(r=>r.relation===cat.key && r.subRelation===sub.key).map(r=>r.name)).size;
         html += `<div class="sidebar-sub-item ${currentSub===sub.key?'active':''}" onclick="setSub('${sub.key}')">
           <span class="sidebar-sub-dot" style="background:${sub.color}"></span>
@@ -971,7 +979,7 @@ function openEditModal(id) {
   document.getElementById('inputDate').value = r.date;
   switchTypeTab(r.type);
   setCatGrid(r.relation);
-  if(r.relation==='relatives') setSubCatGrid(r.subRelation || 'mom');
+  if(SUB_CATEGORIES[r.relation]) setSubCatGrid(r.subRelation || SUB_CATEGORIES[r.relation][0].key);
   document.getElementById('formModal').classList.add('show');
 }
 
@@ -985,7 +993,7 @@ function saveRecord(e) {
   const relation = getSelectedCat();
   if(!name || !amount || !date || !relation) { showToast('请填写完整信息'); return; }
 
-  const subRelation = relation==='relatives' ? getSelectedSubCat() : null;
+  const subRelation = SUB_CATEGORIES[relation] ? getSelectedSubCat() : null;
 
   if(editingId) {
     const idx = records.findIndex(r=>r.id===editingId);
@@ -1018,22 +1026,28 @@ function closeConfirm() { document.getElementById('confirmOverlay').classList.re
 
 // ============ Category Grid ============
 function renderCatGrid() {
-  document.getElementById('catGrid').innerHTML = CATEGORIES.filter(c=>c.key!=='home').map((c,i) =>
-    `<button class="cat-btn ${i===4?'full':''}" data-key="${c.key}" onclick="setCatGrid('${c.key}')">${c.name}</button>`
+  document.getElementById('catGrid').innerHTML = CATEGORIES.filter(c=>c.key!=='home').map((c) =>
+    `<button class="cat-btn" data-key="${c.key}" onclick="setCatGrid('${c.key}')">${c.name}</button>`
   ).join('');
 }
 function setCatGrid(key) {
+  formCatKey = key;
   document.querySelectorAll('.cat-btn').forEach(b => b.classList.toggle('selected', b.dataset.key===key));
   const subGroup = document.getElementById('subRelationGroup');
-  if(key==='relatives') {
+  const subs = SUB_CATEGORIES[key] || [];
+  if(subs.length) {
     subGroup.style.display = '';
-    if(!document.querySelector('.sub-cat-btn.selected')) setSubCatGrid('mom');
+    document.getElementById('subCatGrid').innerHTML = subs.map(c =>
+      `<button class="cat-btn sub-cat-btn" data-key="${c.key}" onclick="setSubCatGrid('${c.key}')">${c.name}</button>`
+    ).join('');
+    if(!document.querySelector('.sub-cat-btn.selected')) setSubCatGrid(subs[0].key);
   } else {
     subGroup.style.display = 'none';
   }
 }
 function renderSubCatGrid() {
-  document.getElementById('subCatGrid').innerHTML = SUB_CATEGORIES.map(c =>
+  const subs = SUB_CATEGORIES[formCatKey] || [];
+  document.getElementById('subCatGrid').innerHTML = subs.map(c =>
     `<button class="cat-btn sub-cat-btn" data-key="${c.key}" onclick="setSubCatGrid('${c.key}')">${c.name}</button>`
   ).join('');
 }
@@ -1066,8 +1080,8 @@ function closeChart(){document.getElementById('chartModal').classList.remove('sh
 // ============ 分类映射（Excel 友好中文） ============
 const REL_MAP={'relatives':'亲戚','colleagues':'同事','friends':'朋友','classmates':'同学','others':'其他'};
 const REL_REV={'亲戚':'relatives','同事':'colleagues','朋友':'friends','同学':'classmates','其他':'others'};
-const SUB_MAP={'mom':'妈妈亲戚','dad':'爸爸亲戚','inlaw':'婆家亲戚'};
-const SUB_REV={'妈妈亲戚':'mom','爸爸亲戚':'dad','婆家亲戚':'inlaw'};
+const SUB_MAP={'mom':'妈妈亲戚','dad':'爸爸亲戚','inlaw':'婆家亲戚','univ':'大学同学','high':'高中同学'};
+const SUB_REV={'妈妈亲戚':'mom','爸爸亲戚':'dad','婆家亲戚':'inlaw','大学同学':'univ','高中同学':'high'};
 const TYPE_MAP={'sent':'人情支出','received':'人情收入'};
 
 // ============ 导出 Excel ============
@@ -1084,7 +1098,7 @@ function exportData(){
     rows.push([
       r.name,
       REL_MAP[r.relation]||r.relation,
-      (r.relation==='relatives'&&r.subRelation)?(SUB_MAP[r.subRelation]||''):'',
+      (r.subRelation&&SUB_MAP[r.subRelation])?SUB_MAP[r.subRelation]:'',
       TYPE_MAP[r.type]||r.type,
       r.amount,
       r.date,
@@ -1135,7 +1149,7 @@ function handleImportFile(input){
         const date=excelDateToStr(get(row,'日期'));
         const amount=parseFloat(String(get(row,'金额')).replace(/[^\d.]/g,''))||0;
         const relKey=REL_REV[get(row,'关系')]||'others';
-        const subKey=relKey==='relatives'?(SUB_REV[get(row,'亲戚分组')]||null):null;
+        const subKey=SUB_REV[get(row,'亲戚分组')]||null;
         const statusText=String(get(row,'状态')).trim();
         const status=type==='received'?'settled':(statusText==='待回礼'?'pending':'settled');
         imported.push({id:0,name,relation:relKey,subRelation:subKey,amount,type,date,status,note:String(get(row,'备注')||'').trim()});
@@ -1301,26 +1315,17 @@ function renderParsePreview(list){
   parsedRecords=list;
   const el=document.getElementById('parsePreview');
 
-  // Build flat relation list: 妈妈亲戚/爸爸亲戚/婆家亲戚/同事/同学/其他
-  const relOrderKeys = ['mom','dad','inlaw','colleagues','classmates','others'];
-
+  // 关系下拉：父分类 + 各自子分类（value 用 父|子 格式）
   el.innerHTML=`<div class="parse-count">已识别 ${list.length} 条，请核对无误后导入：</div>`+
     list.map((r,i)=>{
       let relOpts = '';
-      relOrderKeys.forEach(k => {
-        const sub = SUB_CATEGORIES.find(s=>s.key===k);
-        if(sub){
-          // 子分类：relatives|subKey
-          const sel = (r.relation==='relatives' && r.subRelation===k) ? 'selected' : '';
-          relOpts += `<option value="relatives|${k}" ${sel}>${sub.name}</option>`;
-        } else {
-          // 普通分类
-          const cat = CATEGORIES.find(c=>c.key===k);
-          if(cat){
-            const sel = (r.relation===k) ? 'selected' : '';
-            relOpts += `<option value="${k}" ${sel}>${cat.name}</option>`;
-          }
-        }
+      CATEGORIES.filter(c=>c.key!=='home').forEach(cat=>{
+        const selTop = (r.relation===cat.key && !r.subRelation) ? 'selected' : '';
+        relOpts += `<option value="${cat.key}" ${selTop}>${cat.name}</option>`;
+        (SUB_CATEGORIES[cat.key]||[]).forEach(sub=>{
+          const sel = (r.relation===cat.key && r.subRelation===sub.key) ? 'selected' : '';
+          relOpts += `<option value="${cat.key}|${sub.key}" ${sel}>${sub.name}</option>`;
+        });
       });
 
       return `<div class="parse-item" data-i="${i}">
