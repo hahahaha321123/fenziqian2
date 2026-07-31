@@ -352,26 +352,6 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Hira
 <input type="file" id="importFile" accept=".xlsx,.xls,.csv" style="display:none" onchange="handleImportFile(this)">
 
 <!-- Banner -->
-<div class="banner">
-  <div class="stats-container">
-    <div class="progress-ring-wrap">
-      <svg width="106" height="106" viewBox="0 0 106 106">
-        <circle cx="53" cy="53" r="44" fill="none" stroke="#F0DDD0" stroke-width="10"/>
-        <circle id="progressCircle" cx="53" cy="53" r="44" fill="none" stroke="#C4702A" stroke-width="10" stroke-linecap="round" stroke-dasharray="276.46" stroke-dashoffset="276.46" transform="rotate(-90 53 53)" style="transition:stroke-dashoffset .8s ease"/>
-      </svg>
-      <div class="progress-text">
-        <div class="progress-label">净盈亏</div>
-        <div class="progress-value" id="netValue">¥0</div>
-      </div>
-    </div>
-    <div class="stats-list">
-      <div class="stat-row"><span class="stat-label">人情总支出</span><span class="stat-value" id="totalSent">¥0</span></div>
-      <div class="stat-row"><span class="stat-label">人情总收入</span><span class="stat-value" id="totalReceived">¥0</span></div>
-      <div class="stat-row"><span class="stat-label">待回礼</span><span class="stat-value" id="pendingCount">0人</span></div>
-    </div>
-  </div>
-</div>
-
 <!-- Search -->
 <div class="search-bar">
   <div class="search-input-wrap">
@@ -545,23 +525,9 @@ function loadData() {
 }
 function saveData() { localStorage.setItem(STORAGE_KEY, JSON.stringify(records)); }
 
-// ============ Stats ============
+// ============ Stats (已迁移到 renderHomeDashboard) ============
 function renderStats() {
-  const totalSent = records.filter(r=>r.type==='sent').reduce((s,r)=>s+r.amount,0);
-  const totalReceived = records.filter(r=>r.type==='received').reduce((s,r)=>s+r.amount,0);
-  const pendingRecords = records.filter(r=>r.status==='pending');
-  const net = totalReceived - totalSent;
-
-  document.getElementById('netValue').textContent = formatCurrency(net);
-  document.getElementById('totalSent').textContent = formatCurrency(totalSent);
-  document.getElementById('totalReceived').textContent = formatCurrency(totalReceived);
-  document.getElementById('pendingCount').textContent = pendingRecords.length + '人';
-
-  const circle = document.getElementById('progressCircle');
-  const maxVal = Math.max(Math.abs(totalSent), Math.abs(totalReceived), 1);
-  const pct = Math.min(Math.abs(net)/maxVal, 1);
-  circle.style.strokeDashoffset = 276.46 * (1 - pct);
-  circle.style.stroke = net >= 0 ? '#2E9D5A' : '#C4702A';
+  // 旧版静态banner已移除，统计由renderHomeDashboard统一渲染
 }
 
 // ============ Sidebar ============
