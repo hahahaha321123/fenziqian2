@@ -600,7 +600,7 @@ function renderList() {
     const recs = byName[n];
     const s = recs.filter(r=>r.type==='sent').reduce((a,r)=>a+r.amount,0);
     const r2 = recs.filter(r=>r.type==='received').reduce((a,r)=>a+r.amount,0);
-    summ[n] = { daiSui: Math.max(0, r2 - s), daiShou: Math.max(0, s - r2) };
+    summ[n] = { daiSui: Math.max(0, r2 - s), daiShou: Math.max(0, s - r2), net: r2 - s };
   });
 
   const daiSuiNames = Object.keys(byName).filter(n => summ[n].daiSui > 0);
@@ -614,9 +614,9 @@ function renderList() {
       const recs = byName[name];
       const latest = recs[recs.length-1];
       const cat = CATEGORIES.find(c=>c.key===latest.relation)||CATEGORIES[5];
-      const isNeg = latest.type==='sent';
       const sum = summ[name];
       const status = sum.daiSui>0 ? '待随礼' : (sum.daiShou>0 ? '待收礼' : '已结清');
+      const personNet = sum.net;
       html += `<div class="record-card ${latest.status}" onclick="openPersonPage('${name}')">
         <div class="card-avatar" style="background:${cat.color}">${name.charAt(0)}</div>
         <div class="card-info">
@@ -625,7 +625,7 @@ function renderList() {
         </div>
         <div class="card-dot"></div>
         <div class="card-right">
-          <div class="card-amount ${isNeg?'negative':'positive'}">${isNeg?'-':'+'}${latest.amount.toLocaleString()}</div>
+          <div class="card-amount ${personNet>=0?'positive':'negative'}">${personNet>=0?'+':'-'}${Math.abs(personNet).toLocaleString()}</div>
           <div class="card-status">${status}</div>
         </div>
         <div class="card-actions" onclick="event.stopPropagation()">
