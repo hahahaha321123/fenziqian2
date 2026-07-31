@@ -1307,7 +1307,7 @@ function formatYMD(y,mo,d){return`${y}-${String(mo).padStart(2,'0')}-${String(d)
 function formatYMDObj(d){return formatYMD(d.getFullYear(),d.getMonth()+1,d.getDate());}
 
 let parsedRecords=[];
-function renderParsePreview(list){
+function renderParsePreview(list,scroll=true){
   parsedRecords=list;
   const el=document.getElementById('parsePreview');
 
@@ -1332,7 +1332,9 @@ function renderParsePreview(list){
       <div class="parse-row"><div class="parse-field" style="flex:1 1 100%"><label>事由 / 备注</label><input type="text" value="${escapeHtml(r.note||'')}" placeholder="如：结婚、生孩子、满月酒..." oninput="parsedRecords[${i}].note=this.value"></div></div>
       <div class="parse-row"><div class="parse-field"><label>金额(元)</label><input type="number" value="${r.amount}" oninput="parsedRecords[${i}].amount=Math.max(0,+$this.value)"></div></div>
     </div>`}).join('')+`<div class="parse-footer"><button class="parse-btn" onclick="confirmImportParsed()">✓ 确认导入 ${list.length} 条</button></div>`;
-  setTimeout(()=>el.scrollIntoView({behavior:'smooth',block:'end'}),100);
+  if(scroll){
+    setTimeout(()=>el.scrollIntoView({behavior:'smooth',block:'end'}),100);
+  }
 }
 
 // Handle relation change in parse preview (split key|subKey)
@@ -1340,9 +1342,9 @@ function onParseRelChange(i,val){
   const parts=val.split('|');
   parsedRecords[i].relation=parts[0]||'others';
   parsedRecords[i].subRelation=parts[1]||null;
-  renderParsePreview(parsedRecords);
+  renderParsePreview(parsedRecords,false);
 }
-function removeParsed(i){parsedRecords.splice(i,1);renderParsePreview(parsedRecords);}
+function removeParsed(i){parsedRecords.splice(i,1);renderParsePreview(parsedRecords,false);}
 function confirmImportParsed(){
   const valid=parsedRecords.filter(r=>r.name&&r.amount>0);
   if(valid.length===0){showToast('没有可导入的有效记录');return;}

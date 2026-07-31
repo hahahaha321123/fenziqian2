@@ -1,4 +1,4 @@
-const CACHE = 'fenziqian-v3';
+const CACHE = 'fenziqian-v4';
 const ASSETS = [
   './',
   './index.html',
