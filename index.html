@@ -540,7 +540,7 @@ function renderStats() {
 function renderSidebar() {
   let html = '';
   CATEGORIES.forEach(cat=>{
-    const count = cat.key==='home' ? records.length : records.filter(r=>r.relation===cat.key).length;
+    const count = cat.key==='home' ? records.length : (cat.key==='relatives' ? records.filter(r=>r.relation.startsWith('relatives')).length : records.filter(r=>r.relation===cat.key).length);
     html += `<div class="sidebar-item ${currentCategory===cat.key?'active':''}" onclick="setCategory('${cat.key}')">
       <div class="sidebar-avatar" style="background:${cat.color}">${cat.icon}</div>
       <div class="sidebar-name">${cat.name}</div>
@@ -577,7 +577,14 @@ function renderMain() {
 function renderList() {
   const keyword = document.getElementById('searchInput').value.trim().toLowerCase();
   let filtered = records;
-  if(currentCategory!=='home') filtered=filtered.filter(r=>r.relation===currentCategory);
+  if(currentCategory!=='home') {
+    // 亲戚父级：匹配所有子分类（relation 以 'relatives' 开头）
+    if(currentCategory==='relatives' && !currentSub) {
+      filtered=filtered.filter(r=>r.relation.startsWith('relatives'));
+    } else {
+      filtered=filtered.filter(r=>r.relation===currentCategory);
+    }
+  }
   if(currentSub) filtered=filtered.filter(r=>r.subRelation===currentSub);
   if(keyword) filtered=filtered.filter(r=>r.name.toLowerCase().includes(keyword));
 
@@ -595,9 +602,15 @@ function renderList() {
   }
 
   // 按个人盈亏分组：待随礼 / 待收礼 / 已结清
+  // 注意：盈亏金额基于全部记录计算（不依赖当前筛选），确保与个人详情页一致
+  const allByName = {};
+  records.forEach(r => {
+    if(!allByName[r.name]) allByName[r.name] = [];
+    allByName[r.name].push(r);
+  });
   const summ = {};
-  Object.keys(byName).forEach(n => {
-    const recs = byName[n];
+  Object.keys(allByName).forEach(n => {
+    const recs = allByName[n];
     const s = recs.filter(r=>r.type==='sent').reduce((a,r)=>a+r.amount,0);
     const r2 = recs.filter(r=>r.type==='received').reduce((a,r)=>a+r.amount,0);
     summ[n] = { daiSui: Math.max(0, r2 - s), daiShou: Math.max(0, s - r2), net: r2 - s };
