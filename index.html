@@ -592,18 +592,29 @@ function renderList() {
     return;
   }
 
-  // Show pending first, then settled
-  const pendingNames = Object.keys(byName).filter(n => byName[n].some(r=>r.status==='pending'));
-  const settledNames = Object.keys(byName).filter(n => !byName[n].some(r=>r.status==='pending'));
+  // 按个人盈亏分组：待随礼 / 待收礼 / 已结清
+  const summ = {};
+  Object.keys(byName).forEach(n => {
+    const recs = byName[n];
+    const s = recs.filter(r=>r.type==='sent').reduce((a,r)=>a+r.amount,0);
+    const r2 = recs.filter(r=>r.type==='received').reduce((a,r)=>a+r.amount,0);
+    summ[n] = { daiSui: Math.max(0, r2 - s), daiShou: Math.max(0, s - r2) };
+  });
+
+  const daiSuiNames = Object.keys(byName).filter(n => summ[n].daiSui > 0);
+  const daiShouNames = Object.keys(byName).filter(n => summ[n].daiShou > 0);
+  const settledNames = Object.keys(byName).filter(n => summ[n].daiSui === 0 && summ[n].daiShou === 0);
 
   let html = '';
-  if(pendingNames.length > 0) {
-    html += `<div class="section-header"><div class="section-title">待回礼</div><div class="section-count">${pendingNames.reduce((s,n)=>s+byName[n].filter(r=>r.status==='pending').length,0)}</div></div>`;
-    pendingNames.forEach(name => {
+  const renderGroup = (title, names) => {
+    html += `<div class="section-header"><div class="section-title">${title}</div><div class="section-count">${names.reduce((s,n)=>s+byName[n].length,0)}</div></div>`;
+    names.forEach(name => {
       const recs = byName[name];
       const latest = recs[recs.length-1];
       const cat = CATEGORIES.find(c=>c.key===latest.relation)||CATEGORIES[5];
       const isNeg = latest.type==='sent';
+      const sum = summ[name];
+      const status = sum.daiSui>0 ? '待随礼' : (sum.daiShou>0 ? '待收礼' : '已结清');
       html += `<div class="record-card ${latest.status}" onclick="openPersonPage('${name}')">
         <div class="card-avatar" style="background:${cat.color}">${name.charAt(0)}</div>
         <div class="card-info">
@@ -613,34 +624,7 @@ function renderList() {
         <div class="card-dot"></div>
         <div class="card-right">
           <div class="card-amount ${isNeg?'negative':'positive'}">${isNeg?'-':'+'}${latest.amount.toLocaleString()}</div>
-          <div class="card-status">${statusText(latest)}</div>
-        </div>
-        <div class="card-actions" onclick="event.stopPropagation()">
-          <button class="action-btn" onclick="openEditModal(${latest.id})" title="编辑">✎</button>
-          ${latest.status==='pending'?`<button class="action-btn check" onclick="markSettled(${latest.id})" title="结清">✓</button>`:''}
-          <button class="action-btn delete" onclick="confirmDelete(${latest.id})" title="删除">🗑</button>
-        </div>
-        <div class="card-chevron">›</div>
-      </div>`;
-    });
-  }
-  if(settledNames.length > 0) {
-    html += `<div class="section-header"><div class="section-title">已结清</div><div class="section-count">${settledNames.reduce((s,n)=>s+byName[n].length,0)}</div></div>`;
-    settledNames.forEach(name => {
-      const recs = byName[name];
-      const latest = recs[recs.length-1];
-      const cat = CATEGORIES.find(c=>c.key===latest.relation)||CATEGORIES[5];
-      const isNeg = latest.type==='sent';
-      html += `<div class="record-card ${latest.status}" onclick="openPersonPage('${name}')">
-        <div class="card-avatar" style="background:${cat.color}">${name.charAt(0)}</div>
-        <div class="card-info">
-          <div class="card-name-row"><span class="card-name">${name}</span><span class="card-cat" style="color:${cat.color}">${cat.name}</span></div>
-          <div class="card-date">${formatDateMD(latest.date)}${latest.note?' · '+latest.note:''}</div>
-        </div>
-        <div class="card-dot"></div>
-        <div class="card-right">
-          <div class="card-amount ${isNeg?'negative':'positive'}">${isNeg?'-':'+'}${latest.amount.toLocaleString()}</div>
-          <div class="card-status">${statusText(latest)}</div>
+          <div class="card-status">${status}</div>
         </div>
         <div class="card-actions" onclick="event.stopPropagation()">
           <button class="action-btn" onclick="openEditModal(${latest.id})" title="编辑">✎</button>
@@ -649,13 +633,13 @@ function renderList() {
         <div class="card-chevron">›</div>
       </div>`;
     });
-  }
-  el.innerHTML = html;
-}
+  };
 
-function statusText(r) {
-  if(r.status === 'pending') return '已过' + daysSince(r.date) + '天';
-  return r.type === 'received' ? '收回' : '已结清';
+  if(daiSuiNames.length) renderGroup('待随礼', daiSuiNames);
+  if(daiShouNames.length) renderGroup('待收礼', daiShouNames);
+  if(settledNames.length) renderGroup('已结清', settledNames);
+
+  el.innerHTML = html;
 }
 
 // ============ Home Dashboard ============
