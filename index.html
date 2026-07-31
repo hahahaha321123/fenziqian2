@@ -650,8 +650,8 @@ function renderHomeDashboard() {
   const totalExpense = records.filter(r=>r.type==='sent').reduce((s,r)=>s+r.amount,0);
   const net = totalIncome - totalExpense;
 
-  // 总待随礼 = 人情总收入 − 人情总支出（净盈余，非负）
-  // 总待收礼 = 人情总支出 − 人情总收入（净亏欠，非负）
+  // 总待随礼 = 人情收入 − 人情支出（净盈余，非负）
+  // 总待收礼 = 人情支出 − 人情收入（净亏欠，非负）
   const totalDaiSui = Math.max(0, totalIncome - totalExpense);
   const totalDaiShou = Math.max(0, totalExpense - totalIncome);
 
@@ -705,8 +705,8 @@ function renderHomeDashboard() {
       </div>
     </div>
     <div class="home-stat-list">
-      <div class="home-stat-row"><span class="home-stat-label">人情总支出</span><span class="home-stat-val">${formatCurrency(totalExpense)}</span></div>
-      <div class="home-stat-row"><span class="home-stat-label">人情总收入</span><span class="home-stat-val">${formatCurrency(totalIncome)}</span></div>
+      <div class="home-stat-row"><span class="home-stat-label">人情支出</span><span class="home-stat-val">${formatCurrency(totalExpense)}</span></div>
+      <div class="home-stat-row"><span class="home-stat-label">人情收入</span><span class="home-stat-val">${formatCurrency(totalIncome)}</span></div>
       <div class="home-stat-row"><span class="home-stat-label">总待随礼</span><span class="home-stat-val" style="color:var(--primary)">${formatCurrency(totalDaiSui)}</span></div>
       <div class="home-stat-row"><span class="home-stat-label">总待收礼</span><span class="home-stat-val" style="color:var(--green)">${formatCurrency(totalDaiShou)}</span></div>
     </div>
@@ -769,8 +769,8 @@ function openPersonPage(name) {
         </div>
       </div>
       <div class="person-stat-list">
-        <div class="person-stat-row"><span class="person-stat-label">人情总支出</span><span class="person-stat-val">${formatCurrency(sentTotal)}</span></div>
-        <div class="person-stat-row"><span class="person-stat-label">人情总收入</span><span class="person-stat-val">${formatCurrency(recTotal)}</span></div>
+        <div class="person-stat-row"><span class="person-stat-label">人情支出</span><span class="person-stat-val">${formatCurrency(sentTotal)}</span></div>
+        <div class="person-stat-row"><span class="person-stat-label">人情收入</span><span class="person-stat-val">${formatCurrency(recTotal)}</span></div>
         <div class="person-stat-row"><span class="person-stat-label">待随礼</span><span class="person-stat-val" style="color:var(--primary)">${formatCurrency(daiSui)}</span></div>
         <div class="person-stat-row"><span class="person-stat-label">待收礼</span><span class="person-stat-val" style="color:var(--green)">${formatCurrency(daiShou)}</span></div>
       </div>
